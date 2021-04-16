@@ -1,0 +1,33 @@
+#image: docker:19.03.12
+image: docker:latest
+
+services:
+  #- docker:19.03.12-dind
+  - docker:dind
+
+variables:
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build-push
+
+before_script:
+  #- export GITLAB_TOKEN=${GITLAB_TOKEN_USER}
+  #- export GITLAB_SECRET_TOKEN=${GITLAB_SECRET_TOKEN_KEY}
+  #- echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  #- echo -n $DOCKERHUB_TOKEN_FREDSILVAS | docker login -u fredsilvas --password-stdin $CI_REGISTRY
+  - echo -n $DOCKERHUB_TOKEN_FREDSILVAS | docker login -u fredsilvas --password-stdin docker.io
+
+docker-build-push:
+  stage: build-push
+  script:
+    - docker build --pull -t "fredsilvas/container_terraform_aws_cli:latest" --build-arg GITLAB_TOKEN_USER_INFRA_DEVOPS=${GITLAB_TOKEN_USER_INFRA_DEVOPS} --build-arg GITLAB_SECRET_TOKEN_KEY_INFRA_DEVOPS=${GITLAB_SECRET_TOKEN_KEY_INFRA_DEVOPS} --build-arg GITLAB_TOKEN_USER_INFRA=${GITLAB_TOKEN_USER_INFRA} --build-arg GITLAB_SECRET_TOKEN_KEY_INFRA=${GITLAB_SECRET_TOKEN_KEY_INFRA} --build-arg GITLAB_TOKEN_USER_COMUNICACAO=${GITLAB_TOKEN_USER_COMUNICACAO} --build-arg GITLAB_SECRET_TOKEN_KEY_COMUNICACAO=${GITLAB_SECRET_TOKEN_KEY_COMUNICACAO} --build-arg GITLAB_TOKEN_USER_SISTEMAS=${GITLAB_TOKEN_USER_SISTEMAS} --build-arg GITLAB_SECRET_TOKEN_KEY_SISTEMAS=${GITLAB_SECRET_TOKEN_KEY_SISTEMAS} .
+    - docker push "fredsilvas/container_terraform_aws_cli:latest"
+  allow_failure: false
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - Dockerfile
+      - hashicorp.asc   
