@@ -26,6 +26,9 @@ Version: 2.20.1
 
 Version: jq-1.5-1-a5b5cbe
 
+### OpenVPN to conect on private EC2 instances
+
+Version: 2.4.7
 ## Usage
 
 Launch the CLI
