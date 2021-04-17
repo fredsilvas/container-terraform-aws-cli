@@ -41,7 +41,7 @@ jobs:
          context: .
          file: Dockerfile
          push: true
-         tags: ${{ secrets.DOCKERHUB_USERNAME }}/container-terraform
+         tags: ${{ secrets.DOCKERHUB_USERNAME }}/container-terraform-aws-cli:1.0.0, ${{ secrets.DOCKERHUB_USERNAME }}/container-terraform-aws-cli:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}         
